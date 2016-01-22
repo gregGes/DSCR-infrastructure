@@ -10,7 +10,7 @@ fi
 mkdir -p ${SRC}/manager/ssh
 
 ## generate ssh key-pair
-ssh-keygen -f ${SRC}/manager/ssh/id_rsa
+ssh-keygen -f ${SRC}/manager/ssh/id_rsa -t rsa -N ''
 
 cat ~/.ssh/id_rsa.pub > ${SRC}/manager/ssh/authorized_keys
 
