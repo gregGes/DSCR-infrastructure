@@ -1,0 +1,61 @@
+<cloudbroker>
+    <clouds>
+        <cloud>
+            <name>Amazon</name>
+            <provider>Amazon EC2 CloudBroker GmbH CloudSME</provider>
+            <region>US Standard</region>
+            <flavours>
+                <flavour>
+                    <size>Micro</size>
+                    <id>Amazon EC2 CloudBroker GmbH CloudSME Baseline performance - micro</id>
+                </flavour>
+                <flavour>
+                    <size>Small</size>
+                    <id>Amazon EC2 CloudBroker GmbH CloudSME Baseline performance - small</id>
+                </flavour>
+            </flavours>
+        </cloud>
+        <cloud>
+            <name>CloudSigma</name>
+            <provider>CloudSigma CloudSigma CloudSME</provider>
+            <region>Zrh</region>
+            <flavours>
+                <flavour>
+                    <size>Small</size>
+                    <id>CloudSigma CloudSigma CloudSME Small x64</id>
+                </flavour>
+            </flavours>
+        </cloud>
+    </clouds>
+    <applications>
+        <application>
+            <name>Database</name>
+            <sname>ol_database 1.0</sname>
+            <executable>ol_database 1.0 database.sh</executable>
+        </application>
+        <application>
+            <name>Proxy</name>
+            <sname>ol_proxy 1.0</sname>
+            <executable>ol_proxy 1.0 proxy.sh</executable>
+            <param_template>add tidybooks1.foo.com %s:8085 continue</param_template>
+        </application>
+        <application>
+            <name>Application</name>
+            <sname>ol_application 1.00</sname>
+            <executable>ol_application 1.00 wrapper.sh</executable>
+            <param_template>-deploy tidybooks %s 8085</param_template>
+        </application>
+        <application>
+            <name>Node DSCR</name>
+            <sname>node_dscr_test 1.00</sname>
+            <executable>node_dscr_test 1.00 execute.sh</executable>
+            <param_template>%s</param_template>
+        </application>
+        <application>
+            <name>Proxy DSCR</name>
+            <sname>proxy_dscr_test 1.00</sname>
+            <executable>proxy_dscr_test 1.00 execute.sh</executable>
+            <param_template>proxy</param_template>
+        </application>
+    </applications>
+</cloudbroker>
