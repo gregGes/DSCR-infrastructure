@@ -21,7 +21,7 @@ global manager_ip
 global ip
 
 def get_manager_ip():
-	p = os.popen("consul members | grep manager | awk -F ' ' '{print $2}' | awk -F ':' '{print $1}'")
+	p = os.popen("consul members | grep master | awk -F ' ' '{print $2}' | awk -F ':' '{print $1}'")
 	s = p.readline().rstrip('\n')
 	p.close()
 	#print s
