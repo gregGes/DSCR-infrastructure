@@ -58,15 +58,11 @@ cd ${INSTALL_DIR}
 
 sudo cat id_rsa.pub >> /home/${_user}/.ssh/authorized_keys
 
-### creation of the application directory ###
-
-sudo mkdir /home/${_user}/app
 
 ### creation of the docker_images directory ###
 
 sudo mkdir /home/${_user}/docker_images
 
-sudo touch /home/${_user}/docker_images/list_docker_images_to_build.txt
 
 ### initialisation of the consul ###
 
@@ -86,10 +82,6 @@ sudo mv consul.conf /etc/init
 sudo mkdir -p /etc/consul.d/server
 
 sudo mv config.json /etc/consul.d/server
-
-### mv registrator to /usr/bin ###
-
-#sudo mv registrator /usr/bin 
 
 
 ### installation of docker ###

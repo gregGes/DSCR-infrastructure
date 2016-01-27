@@ -1,5 +1,4 @@
 #!/bin/bash
-echo `date` >> /home/ubuntu/date.txt
 if [ ! -d /tmp/images ]; then
 	mkdir -p /tmp/images
 fi
@@ -8,7 +7,9 @@ cd /tmp/images
 echo {{.ID}}
 IMAGE=`docker images {{.ID}} | grep {{.ID}}`
 if [ -z "$IMAGE" ]; then
-	curl http://{{.Address}}:{{.Port}}/{{ index .Tags 0 }} | tar -xf - 2>/dev/null
+	scp -oStrictHostKeyChecking=no -P 2222 {{.Address}}:~/{{ index .Tags 0 }} .
+	tar -xvf {{.ID}}.tar >/dev/null
+	rm {{.ID}}.tar
 else
 	echo "image already exist"
 fi

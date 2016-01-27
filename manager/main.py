@@ -132,7 +132,6 @@ def container_quit(args):
 def container_build(args):
 	if args.name[0].startswith("container-", 0, 10):
  		if os.path.exists(args.filename[0]):
-			call(['docker','cp',args.filename[0], 'http:/usr/local/apache2/htdocs'])
 			fileJson='{"ID":"'+args.name[0]+'", "Service":"containers", "Name":"containers", "Tags":["'+args.filename[0]+'"], "Address":"'+ip+'", "Port":80}'
 			call(['curl', '--data', fileJson, 'http://localhost:8500/v1/agent/service/register']) 	
 			exit(0)

@@ -32,8 +32,5 @@ sudo mv swarm.token ${INSTALL_DIR}
 
 docker run -d -p 22375:2375 -t swarm manage token://${TOKEN}
 
-# launch the http server
-
-docker run -p 80:80 --name http -d httpd 
 
 exit 0

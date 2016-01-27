@@ -9,6 +9,7 @@ RAND_NUM=`cat /dev/urandom | tr -cd 'a-f0-9' | head -c 20`
 NODE_NAME=${ROLE}_${RAND_NUM}
 SRC=`pwd`
 INSTALL_DIR=/opt/node_DSCR
+_user="$(id -u -n)"
 
 # Reseed consul
 
@@ -78,6 +79,8 @@ sleep 3
 sudo service consul-template stop
 MASTER_IP=`consul members | grep master | awk -F ' ' '{print $2}' | awk -F ':' '{print $1}'`
 
+cat /etc/init/consul-template.conf | sed s/USER/${_user}/ > /tmp/ddeg
+sudo mv /tmp/ddeg /etc/init/consul-template.conf
 cat /etc/init/consul-template.conf | sed s/IP_ADDRESS/${MASTER_IP}/ > /tmp/ddeg
 sudo mv /tmp/ddeg /etc/init/consul-template.conf
 
