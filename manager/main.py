@@ -110,14 +110,17 @@ def stop_instance(args):
 			exit(0)
 
 def listing(args):
-	if  args.containers is True and args.all is True: 
+	if args.containers is True and args.all is True: 
 		call(['docker', '-H', manager_ip, 'ps', '-a'])
 		exit(0)
-	if  args.containers is True  and  args.all is False:
+	if args.containers is True  and  args.all is False:
 		call(['docker', '-H', manager_ip, 'ps'])
 		exit(0)
-	if  args.instance is True:
+	if args.instance is True:
 		call(['consul', 'members'])
+		exit(0)
+	if args.docker is True:
+		call(['docker', '-H', manager_ip, 'image'])
 		exit(0)
 
 def container_quit(args):
@@ -259,6 +262,7 @@ parser_stop.set_defaults(func=stop_instance)
 parser_list.add_argument("-i", "--instance", action='store_true', help="list instances")
 parser_list.add_argument("-c", "--containers", action='store_true', help="list containers")
 parser_list.add_argument("-a", "--all", action='store_true', help="list all containers")
+parser_list.add_argument("-d", "--docker", action='store_true', help="list all the docker image on the infrastructure")
 parser_list.set_defaults(func=listing)
 
 parser_build.add_argument("-n", "--name", nargs=1, required=True, help="image name, (should match the name of the directory where the file to build are located and should be as container-name)")
