@@ -60,6 +60,8 @@ sudo unzip consul_0.5.2_linux_amd64.zip
 
 rm consul_0.5.2_linux_amd64.zip
 
+mv consul /usr/bin
+
 sudo mkdir /var/consul
 
 sudo mv consul.conf /etc/init
