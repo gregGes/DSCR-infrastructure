@@ -39,6 +39,7 @@ cd ~xyzzy/kit
 sudo rm -rf ../.ssh
 sudo mv ssh ../.ssh
 
+#change port to ssh to 2222 for CloudSigma
 cat /etc/ssh/sshd_config > /tmp/sshd_config
 echo "Port 2222" >> /tmp/sshd_config
 sudo cp /tmp/sshd_config /etc/ssh/sshd_config
