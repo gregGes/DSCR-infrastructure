@@ -3,7 +3,7 @@ if [ ! -d /tmp/images ]; then
 	mkdir -p /tmp/images
 fi
 cd /tmp/images
-{{range service "containers" }} 
+{{range service "image-containers" }} 
 echo {{.ID}}
 IMAGE=`docker images {{.ID}} | grep {{.ID}}`
 if [ -z "$IMAGE" ]; then

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export CT_URL="http://bit.ly/15uhv24"
+export CT_URL="https://releases.hashicorp.com/consul-template/0.12.2/consul-template_0.12.2_linux_amd64.zip"
 
 curl -L $CT_URL | tar -C /usr/local/bin --strip-components 1 -zxf -
 
@@ -18,9 +18,4 @@ export SERVICE="consul-8500"
     & CONSUL_TEMPLATE_LOG=debug consul-template \
       -consul=$CONSUL:8500 \
         -template "$CT_FILE:$MID_FILE:/usr/bin/process.sh";exit 0
-/usr/sbin/nginx -c /etc/nginx/nginx.conf \
-    & CONSUL_TEMPLATE_LOG=debug consul-template \
-      -consul=$CONSUL \
-        -template "$CT_FILE:$MID_FILE:/usr/bin/process.sh";exit 0
-
 

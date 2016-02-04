@@ -3,7 +3,8 @@
 ############################################################
 
 # parameters
-
+ 
+SRC=`pwd`
 ROLE=$1
 RAND_NUM=`cat /dev/urandom | tr -cd 'a-f0-9' | head -c 20`
 NODE_NAME=${ROLE}_${RAND_NUM}
@@ -61,7 +62,7 @@ sudo service docker stop
 sudo rm -f /etc/docker/key.json > /dev/null 2>&1
 sudo rm -f /tmp/ddef > /dev/null 2>&1
 
-cat /etc/default/docker | sed s/PLACEHOLDER/${ROLE}/ > /tmp/ddef
+cat /etc/default/docker | sed s/PLACEHOLDER/proxy/ > /tmp/ddef
 sudo mv /tmp/ddef /etc/default/docker
 sudo service docker start
 sleep 3

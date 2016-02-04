@@ -74,7 +74,7 @@ def start_instance(args):
 
 	service_to_run = Service(s_app, s_cloud, s_flavour)
 	instance_to_run = Instance(service_to_run, None, args.files)
-	if args.name[0] is not None:
+	if args.name is True:
 		cb_handler = CloudbrokerJob(bas_data, instance_to_run, args.tag[0], args.name[0])
 	else:
 		cb_handler = CloudbrokerJob(bas_data, instance_to_run, args.tag[0])
@@ -120,13 +120,14 @@ def listing(args):
 		call(['consul', 'members'])
 		exit(0)
 	if args.docker is True:
-		call(['docker', '-H', manager_ip, 'image'])
+		call(['docker', '-H', manager_ip, 'images'])
+		print "docker -H "+manager_ip+" images"	
 		exit(0)
 
 def container_quit(args):
 	if args.rm is True:
 		call(['docker','-H', manager_ip,'kill',args.name[0]])
-	        container_remove(args)
+		call(['docker','-H', manager_ip,'rm',args.name[0]])
 		exit(0)
 	else:
 		call(['docker','-H', manager_ip,'kill',args.name[0]])
@@ -135,7 +136,7 @@ def container_quit(args):
 def container_build(args):
 	if args.name[0].startswith("container-", 0, 10):
  		if os.path.exists(args.filename[0]):
-			fileJson='{"ID":"'+args.name[0]+'", "Service":"containers", "Name":"containers", "Tags":["'+args.filename[0]+'"], "Address":"'+ip+'", "Port":80}'
+			fileJson='{"ID":"'+args.name[0]+'", "Service":"image-containers", "Name":"image-containers", "Tags":["'+args.filename[0]+'"], "Address":"'+ip+'", "Port":80}'
 			call(['curl', '--data', fileJson, 'http://localhost:8500/v1/agent/service/register']) 	
 			exit(0)
 		else:
@@ -210,12 +211,20 @@ def get_info(args):
 		exit(1)	
 	
 def container_logs(args):
-	call(['docker', '-H', manager_ip, 'logs', args.name[0]])
-	exit(0)
+	if args.follow is True:
+		call(['docker', '-H', manager_ip, 'logs', '--follow', args.name[0]])
+	else:
+		call(['docker', '-H', manager_ip, 'logs', args.name[0]])
+		exit(0)
 
 def container_remove(args):
-	call(['docker','-H', manager_ip,'rm',args.name[0]])
-	exit(0)
+	if args.image is True:
+		call(['docker', '-H', manager_ip, 'rmi', args.name[0]])
+		call(['curl', 'http://localhost:8500/v1/agent/service/deregister/'+args.name[0]])
+		exit(0)
+	else:
+		call(['docker','-H', manager_ip,'rm',args.name[0]])
+		exit(0)
 
 def container_execute(args):
 	call(['docker', '-H', manager_ip, 'exec', '-it', args.name[0]]+args.command)
@@ -243,7 +252,7 @@ parser_list = subparsers.add_parser('list', help="this will list containers/inst
 parser_build = subparsers.add_parser('build', help="this will build the image in each databases instances and applications instances running")
 parser_info = subparsers.add_parser('info', help="this will gives info on the services running on the infrastructure")
 parser_logs = subparsers.add_parser('logs', help="this will allow to check the logs of a container")
-parser_remove = subparsers.add_parser('remove', help="this will remove the non runing container")
+parser_remove = subparsers.add_parser('remove', help="this is use to remove a stoped container or docker image")
 parser_exec = subparsers.add_parser('execute', help="this will execute the command given on the container")
 parser_copy = subparsers.add_parser('copy', help="this will copy files inside a container")
 
@@ -251,7 +260,7 @@ parser_start.add_argument("-c", "--cloud", nargs=1, required=True, help="cloud")
 parser_start.add_argument("-a", "--application", nargs=1, required=True, help="instance")
 parser_start.add_argument("-f", "--flavour", nargs=1, required=True, help="flavour")
 parser_start.add_argument("-t", "--tag", nargs=1, required=True, help="tag")
-parser_start.add_argument("-n", "--name", nargs=1, choices=["application", "database"], required=True, help="service tag")
+parser_start.add_argument("-n", "--name", nargs=1, choices=["application", "database"], help="service tag")
 parser_start.add_argument("files", metavar="filename", nargs="*", help="input file names")
 parser_start.add_argument("-I", action="store_true", help="init instances")
 parser_start.set_defaults(func=start_instance)
@@ -289,9 +298,11 @@ parser_info.add_argument("-a", "--all", action='store_true', help="list of all t
 parser_info.set_defaults(func=get_info)
 
 parser_logs.add_argument("-n", "--name", nargs=1, required=True, help="container name")
+parser_logs.add_argument("-f", "--follow", action='store_true', help="stream the logs")
 parser_logs.set_defaults(func=container_logs)
 
-parser_remove.add_argument("-n", "--name", nargs=1, required=True, help="container name")
+parser_remove.add_argument("-n", "--name", nargs=1, required=True, help="name")
+parser_remove.add_argument("-i", "--image", action='store_true', help="docker image to remove")
 parser_remove.set_defaults(func=container_remove)
 
 parser_exec.add_argument("-n", "--name", nargs=1, required=True, help="container name")
