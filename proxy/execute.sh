@@ -74,7 +74,7 @@ TOKEN=`cat ${INSTALL_DIR}/swarm.token`
 
 docker run -d swarm join --addr=${HOST_IP}:2375 token://${TOKEN}
 
-docker run -d --net=host --volume=/var/run/docker.sock:/tmp/docker.sock gliderlabs/registrator:latest consul://     localhost:8500/swarm
+docker run -d --net=host --volume=/var/run/docker.sock:/tmp/docker.sock gliderlabs/registrator:latest consul://localhost:8500/swarm
 
 
 sleep infinity
