@@ -6,7 +6,7 @@
 	"encrypt":"CONSUL_KEY",
 	"bind_addr":"IP_ADDRESS",
 	"datacenter":"DSCR",
-	"log_level":"INFO",
+	"log_level":"err",
 	"addresses":{
 		"http":"0.0.0.0"
 	},
