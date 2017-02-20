@@ -1,0 +1,130 @@
+#!/usr/bin/python
+
+from Datamanager import Instance
+from Datamanager import Container
+from Datamanager import ImageContainer
+import urllib, json
+from subprocess import call
+import time
+def update_containers():
+	cont = list_containers()
+	data = Container()
+	container = dict()
+	for i in xrange(len(cont)):
+		try:
+			container["name"] = cont[i]["Names"]	
+			container["application"] = cont[i]["Image"]
+			container["location"] = cont[i]["Ports"][0]["IP"]
+			container["containerId"] = cont[i]["Id"]
+			container["memory"] = usage_memory(container["containerId"])
+		except IndexError:
+			container["location"] = ""
+		print container
+		print "**********"
+		if data.exist({"name":container["name"]}):
+			print "container already exist"
+		else:
+			print "container to be added to the database"
+			data.add_container(container)
+
+def update_nodes():
+	node = list_nodes()
+	data = Instance()
+	instance = dict()
+	for i in xrange(len(node)):
+		instance["name"] = node[i]["Node"]
+		instance["ip"] = node[i]["Address"]
+		instance["cloud"] = "CloudSigma"
+		instance["availability"] = 1700000000
+		if data.exist({"name":instance["name"]}):
+			print "instance already exist"
+		elif "master" in instance["name"]:
+			print "node manager no container to be deploy here"
+		else:
+			print "instance added"
+			data.add_instance(instance)
+
+def update_images():
+	image = list_images()
+	data = ImageContainer()
+	im_cont = dict()
+	for i in xrange(len(image)):
+		im_cont["name"] = image[i]["RepoTags"][0].rsplit(':', 1)[0]
+		im_cont["limit"] = image[i]["VirtualSize"]
+		if data.exist({"name":im_cont["name"]}):
+			print "image already exist"
+		else:
+			print "image added"
+			data.add_image(im_cont)
+
+def update_availability():
+	node = Instance()
+	containers = Container()
+	for cursor in node.get_all():
+		print cursor
+		availability = cursor["size"]
+		for cursor_container in containers.get_container({"location":cursor["ip"]}):
+			print "...."
+			print cursor_container
+			print availability
+			availability = availability - cursor_container["memory"]
+		node.update_availability(cursor, availability)
+
+def list_containers():
+	url="http://localhost:22375/v1.21/containers/json"
+        response=urllib.urlopen(url)
+        cont=json.loads(response.read())
+        return cont
+
+def usage_memory(container_id):
+	url="http://localhost:22375/v1.21/containers/"+container_id+"/stats?stream=False"
+	response=urllib.urlopen(url)
+        memory=json.loads(response.read())
+	return memory["memory_stats"]["usage"]
+
+def update_memory():
+	container = Container()
+	
+	for cursor in container.get_all():
+		memory = usage_memory(cursor["containerId"])
+		container.update_memory(cursor, memory)	
+		
+def list_nodes():
+	url="http://localhost:8500/v1/catalog/nodes"
+	response=urllib.urlopen(url)
+	data=json.loads(response.read())
+	return data
+
+def list_images():
+	url = "http://localhost:22375/v1.21/images/json"
+	response = urllib.urlopen(url)
+	data = json.loads(response.read())
+	return data
+
+def check_for_launch(args):
+	nodes = Instance()
+	image = ImageContainer()
+	limit = 0
+	if image.exist(args):
+		for im in image.get_image(args):
+			limit = im["limit"] + im["critical"]
+			break
+	
+	for cursor in nodes.get_all():
+		availability = cursor["availability"] - cursor["critical"]
+		if availability > limit:
+			print availability
+			print limit
+			return True
+	return False
+
+def wait_for_instance(initial):	
+	nodes = Instance()
+	while nodes.get_all().count() is initial:
+		update_nodes()
+		time.sleep(2)
+	return
+
+def get_num_nodes():
+	nodes = Instance()
+	return nodes.get_all().count()	

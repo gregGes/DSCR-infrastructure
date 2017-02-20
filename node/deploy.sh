@@ -55,11 +55,11 @@ sudo chown 0:0 /etc/sudoers.d/91-xyzzy
 cd ${INSTALL_DIR}
 
 ### initialisation of the consul ###
-sudo wget https://releases.hashicorp.com/consul/0.5.2/consul_0.5.2_linux_amd64.zip
+sudo wget https://releases.hashicorp.com/consul/0.7.3/consul_0.7.3_linux_amd64.zip
 
-sudo unzip consul_0.5.2_linux_amd64.zip
+sudo unzip consul_0.7.3_linux_amd64.zip
 
-rm consul_0.5.2_linux_amd64.zip
+rm consul_0.7.3_linux_amd64.zip
 
 sudo mv consul /usr/bin
 
@@ -71,26 +71,7 @@ sudo mkdir -p /etc/consul.d/server
 
 sudo mv config.json /etc/consul.d/server
 
-### initialisation of the consul-template service ###
 
-sudo wget https://releases.hashicorp.com/consul-template/0.11.1/consul-template_0.11.1_linux_amd64.zip
-
-sudo unzip consul-template_0.11.1_linux_amd64.zip
-
-sudo rm consul-template_0.11.1_linux_amd64.zip
-
-sudo mv consul-template /usr/local/bin
-
-sudo mv consul-template.conf /etc/init
-
-sudo mv appfetcher.sh /usr/bin
-
-
-### initialisation of swarm ###
-
-sudo mv swarm /usr/bin
-
-sudo mv swarm.conf /etc/init
 
 ### mv registrator to /usr/bin ###
 
@@ -108,9 +89,19 @@ sudo usermod -aG docker $_user
 sudo rm -f /etc/docker/key.json > /dev/null 2>&1
 sudo rm /etc/default/docker
 sudo mv docker /etc/default
+sudo mkdir -p /home/$_user/.docker
+sudo mv ${INSTALL_DIR}/docker-config.json /home/$_user/.docker/config.json
 sudo service docker restart
 
+### creation of the swap memory
+sudo rm -f /swapfile
+sudo dd if=/dev/zero of=/swapfile bs=1M count=1024  
+sudo chown root /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
 
+### back to the source directory
 cd ${SRC}
 
 exit 0

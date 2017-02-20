@@ -5,13 +5,10 @@
 	"node_name":"NODE_NAME",
 	"encrypt":"CONSUL_KEY",
 	"bind_addr":"IP_ADDRESS",
-	"datacenter":"DSCR",
+	"datacenter":"dscrtidy",
 	"log_level":"err",
 	"addresses":{
 		"http":"0.0.0.0"
 	},
-	"enable_syslog":true,
-	"atlas_join":true,
-	"atlas_infrastructure":"ATLAS_INFRASTRUCTURE_NAME",
-	"atlas_token":"ATLAS_INFRASTRUCTURE_TOKEN"
+	"enable_syslog":true
 }

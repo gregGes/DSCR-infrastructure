@@ -11,6 +11,12 @@ SRC=`pwd`
 INSTALL_DIR=/opt/node_DSCR
 _user="$(id -u -n)"
 
+# start swap file
+sudo swapon /swapfile
+
+# make the swappimess at 0 
+sudo sysctl vm.swappiness=0
+
 # Reseed consul
 
 sudo service consul stop
@@ -72,20 +78,16 @@ sudo rm -f /tmp/ddef > /dev/null 2>&1
 
 cat /etc/default/docker | sed s/PLACEHOLDER/${ROLE}/ > /tmp/ddef
 sudo mv /tmp/ddef /etc/default/docker
+cat /etc/default/docker | sed s/NODE_NAME/${NODE_NAME}/ > /tmp/ddef
+sudo mv /tmp/ddef /etc/default/docker
 sudo service docker start
 sleep 3
 
-# Reseed consul-template
-sudo service consul-template stop
-MASTER_IP=`consul members | grep master | awk -F ' ' '{print $2}' | awk -F ':' '{print $1}'`
+# consul join the cluster
 
-cat /etc/init/consul-template.conf | sed s/USER/${_user}/ > /tmp/ddeg
-sudo mv /tmp/ddeg /etc/init/consul-template.conf
-cat /etc/init/consul-template.conf | sed s/IP_ADDRESS/${MASTER_IP}/ > /tmp/ddeg
-sudo mv /tmp/ddeg /etc/init/consul-template.conf
+MANAGER_IP=`cat ${SRC}/manager_ip.txt`
 
-sudo service consul-template start
-
+consul join ${MANAGER_IP}
 
 # start swarm
 

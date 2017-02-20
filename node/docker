@@ -4,7 +4,7 @@
 #DOCKER="/usr/local/bin/docker"
 
 # Use DOCKER_OPTS to modify the daemon startup options.
-DOCKER_OPTS="--dns 8.8.8.8 --dns 8.8.4.4 -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock --label role=PLACEHOLDER"
+DOCKER_OPTS="--dns 8.8.8.8 --dns 8.8.4.4 -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock --label role=PLACEHOLDER --label host=NODE_NAME --insecure-registry serv-36.felho.sztaki.hu:5000"
 
 # If you need Docker to use an HTTP proxy, it can also be specified here.
 #export http_proxy="http://127.0.0.1:3128/"

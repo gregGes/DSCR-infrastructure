@@ -1,0 +1,12 @@
+---
+containers:
+ - image: [mongo]
+   location: [application]
+   name: mongoone
+   arguments: [--smallfiles]
+ - image: [mongo]
+   location: [application]
+   name: [mongotwo]
+   arguments: [--smallfiles]
+
+...

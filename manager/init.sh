@@ -32,5 +32,8 @@ sudo mv swarm.token ${INSTALL_DIR}
 
 docker run -d -p 22375:2375 -t swarm manage token://${TOKEN}
 
+# create a file containing the manager ip inside
+
+sudo echo ${HOST_IP} >> ${INSTALL_DIR} manager_ip.txt
 
 exit 0

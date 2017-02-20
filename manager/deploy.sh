@@ -67,11 +67,11 @@ sudo mkdir /home/${_user}/docker_images
 
 ### initialisation of the consul ###
 
-sudo wget https://releases.hashicorp.com/consul/0.5.2/consul_0.5.2_linux_amd64.zip
+sudo wget https://releases.hashicorp.com/consul/0.7.3/consul_0.7.3_linux_amd64.zip
 
-sudo unzip consul_0.5.2_linux_amd64.zip
+sudo unzip consul_0.7.3_linux_amd64.zip
 
-sudo m consul_0.5.2_linux_amd64.zip
+sudo m consul_0.7.3_linux_amd64.zip
 
 
 sudo mv consul /usr/bin
@@ -112,7 +112,18 @@ sudo mv Cloudbroker.py /home/$_user
 sudo mv main.py /home/$_user
 
 sudo chown -R ${_user}:${_user} outputs/pickled
+
+## installation of mongodb
+sudo apt-get -y install mongodb
+
+## installation of python-pymongo
+sudo apt-get -y install python 
+sudo apt-get -y install python-pymongo
+
+
+## link main.py to /usr/bin/micado
+sudo ln -s ${INSTALL_DIR}/autoscaling/main.py /usr/bin/micado
+
 cd ${SRC}
 
 exit 0
-
